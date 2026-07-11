@@ -15,7 +15,40 @@
                 Collect fruit, grow by one segment each time, and survive as the pace keeps rising.
             </p>
 
+            <form id="setup-form" class="setup-form">
+                <label class="field">
+                    <span>Nickname</span>
+                    <input
+                        id="nickname-input"
+                        name="nickname"
+                        type="text"
+                        maxlength="16"
+                        placeholder="Enter your nickname"
+                        required
+                    >
+                </label>
+
+                <label class="field">
+                    <span>Snake Color</span>
+                    <input id="snake-color-input" name="snakeColor" type="color" value="#7bc96f">
+                </label>
+
+                <label class="field">
+                    <span>Theme</span>
+                    <select id="theme-select" name="theme">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </label>
+
+                <button id="start-button" type="submit">Start Session</button>
+            </form>
+
             <div class="hud" aria-label="Game status">
+                <div class="hud-card">
+                    <span class="hud-label">Player</span>
+                    <strong id="player-name">Guest</strong>
+                </div>
                 <div class="hud-card">
                     <span class="hud-label">Score</span>
                     <strong id="score">0</strong>
@@ -42,6 +75,12 @@
                 aria-label="Snake game board"
                 role="img"
             ></canvas>
+            <div id="start-overlay" class="overlay" aria-live="polite">
+                <div>
+                    <p class="overlay-title">Ready to Play?</p>
+                    <p id="start-overlay-text">Choose a nickname, color, and theme to begin.</p>
+                </div>
+            </div>
             <div id="overlay" class="overlay hidden" aria-live="polite">
                 <p class="overlay-title">Game Over</p>
                 <p id="overlay-text">Press Enter or use the restart button.</p>

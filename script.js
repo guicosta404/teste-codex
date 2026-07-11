@@ -2,9 +2,15 @@ const canvas = document.getElementById("game");
 const context = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
 const levelElement = document.getElementById("level");
+const playerNameElement = document.getElementById("player-name");
 const overlayElement = document.getElementById("overlay");
 const overlayTextElement = document.getElementById("overlay-text");
+const startOverlayElement = document.getElementById("start-overlay");
 const restartButton = document.getElementById("restart-button");
+const setupForm = document.getElementById("setup-form");
+const nicknameInput = document.getElementById("nickname-input");
+const snakeColorInput = document.getElementById("snake-color-input");
+const themeSelect = document.getElementById("theme-select");
 
 const gridSize = 20;
 const tileCount = canvas.width / gridSize;
@@ -12,6 +18,7 @@ const initialTickMs = 180;
 const minimumTickMs = 80;
 const speedStepMs = 12;
 const fruitsPerLevel = 3;
+const storageKey = "snake-game-settings";
 
 let snake;
 let direction;
@@ -20,6 +27,61 @@ let fruit;
 let score;
 let gameOver;
 let loopId;
+let sessionStarted = false;
+let playerName = "Guest";
+let snakeColor = "#7bc96f";
+let activeTheme = "light";
+
+function loadSettings() {
+    const rawSettings = window.localStorage.getItem(storageKey);
+
+    if (!rawSettings) {
+        return;
+    }
+
+    try {
+        const parsedSettings = JSON.parse(rawSettings);
+
+        if (typeof parsedSettings.nickname === "string") {
+            playerName = parsedSettings.nickname.trim() || "Guest";
+        }
+
+        if (typeof parsedSettings.snakeColor === "string" && /^#[0-9a-f]{6}$/i.test(parsedSettings.snakeColor)) {
+            snakeColor = parsedSettings.snakeColor;
+        }
+
+        if (parsedSettings.theme === "dark" || parsedSettings.theme === "light") {
+            activeTheme = parsedSettings.theme;
+        }
+    } catch {
+        window.localStorage.removeItem(storageKey);
+    }
+}
+
+function saveSettings() {
+    window.localStorage.setItem(
+        storageKey,
+        JSON.stringify({
+            nickname: playerName,
+            snakeColor,
+            theme: activeTheme,
+        })
+    );
+}
+
+function syncFormWithSettings() {
+    nicknameInput.value = playerName === "Guest" ? "" : playerName;
+    snakeColorInput.value = snakeColor;
+    themeSelect.value = activeTheme;
+}
+
+function applyTheme() {
+    document.body.dataset.theme = activeTheme;
+}
+
+function updatePlayerName() {
+    playerNameElement.textContent = playerName;
+}
 
 function resetGame() {
     snake = [
@@ -141,10 +203,10 @@ function draw() {
 }
 
 function drawBoard() {
-    context.fillStyle = "#1f3122";
+    context.fillStyle = getCssVariable("--board");
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    context.strokeStyle = "rgba(240, 237, 221, 0.07)";
+    context.strokeStyle = getCssVariable("--grid");
     context.lineWidth = 1;
 
     for (let index = 1; index < tileCount; index += 1) {
@@ -164,7 +226,7 @@ function drawBoard() {
 function drawSnake() {
     snake.forEach((segment, index) => {
         const inset = index === 0 ? 2 : 3;
-        context.fillStyle = index === 0 ? "#f7f3e8" : "#7bc96f";
+        context.fillStyle = index === 0 ? getSnakeHeadColor() : snakeColor;
         context.fillRect(
             segment.x * gridSize + inset,
             segment.y * gridSize + inset,
@@ -178,7 +240,7 @@ function drawFruit() {
     const centerX = fruit.x * gridSize + gridSize / 2;
     const centerY = fruit.y * gridSize + gridSize / 2;
 
-    context.fillStyle = "#ff6b35";
+    context.fillStyle = getCssVariable("--fruit");
     context.beginPath();
     context.arc(centerX, centerY, gridSize * 0.32, 0, Math.PI * 2);
     context.fill();
@@ -189,6 +251,26 @@ function drawFruit() {
     context.fill();
 }
 
+function getSnakeHeadColor() {
+    const [red, green, blue] = hexToRgb(snakeColor);
+    const highlight = 64;
+
+    return `rgb(${Math.min(255, red + highlight)}, ${Math.min(255, green + highlight)}, ${Math.min(255, blue + highlight)})`;
+}
+
+function hexToRgb(hexColor) {
+    const normalized = hexColor.replace("#", "");
+    return [
+        Number.parseInt(normalized.slice(0, 2), 16),
+        Number.parseInt(normalized.slice(2, 4), 16),
+        Number.parseInt(normalized.slice(4, 6), 16),
+    ];
+}
+
+function getCssVariable(variableName) {
+    return window.getComputedStyle(document.body).getPropertyValue(variableName).trim();
+}
+
 function isReverseDirection(proposedDirection) {
     return (
         proposedDirection.x === -direction.x &&
@@ -197,6 +279,10 @@ function isReverseDirection(proposedDirection) {
 }
 
 function handleDirectionChange(event) {
+    if (!sessionStarted) {
+        return;
+    }
+
     const key = event.key.toLowerCase();
     let proposedDirection = null;
 
@@ -224,7 +310,60 @@ function handleDirectionChange(event) {
     nextDirection = proposedDirection;
 }
 
-document.addEventListener("keydown", handleDirectionChange);
-restartButton.addEventListener("click", resetGame);
+function startSession(event) {
+    event.preventDefault();
 
-resetGame();
+    const submittedNickname = nicknameInput.value.trim();
+
+    if (!submittedNickname) {
+        nicknameInput.focus();
+        nicknameInput.reportValidity();
+        return;
+    }
+
+    playerName = submittedNickname;
+    snakeColor = snakeColorInput.value;
+    activeTheme = themeSelect.value === "dark" ? "dark" : "light";
+    sessionStarted = true;
+
+    saveSettings();
+    applyTheme();
+    updatePlayerName();
+    startOverlayElement.classList.add("hidden");
+    resetGame();
+}
+
+function previewTheme(event) {
+    activeTheme = event.target.value === "dark" ? "dark" : "light";
+    applyTheme();
+    saveSettings();
+}
+
+function updateSnakeColor(event) {
+    snakeColor = event.target.value;
+    saveSettings();
+
+    if (sessionStarted) {
+        draw();
+    }
+}
+
+function handleRestart() {
+    if (!sessionStarted) {
+        nicknameInput.focus();
+        return;
+    }
+
+    resetGame();
+}
+
+loadSettings();
+applyTheme();
+updatePlayerName();
+syncFormWithSettings();
+
+document.addEventListener("keydown", handleDirectionChange);
+restartButton.addEventListener("click", handleRestart);
+setupForm.addEventListener("submit", startSession);
+themeSelect.addEventListener("change", previewTheme);
+snakeColorInput.addEventListener("change", updateSnakeColor);

@@ -11,10 +11,30 @@
     --snake-body: #7bc96f;
     --fruit: #ff6b35;
     --shadow: 0 24px 60px rgba(44, 36, 27, 0.16);
+    --input-bg: rgba(255, 255, 255, 0.72);
+    --input-border: rgba(61, 42, 26, 0.16);
+    --button-start: linear-gradient(135deg, #2c241b, #47633f);
 }
 
 * {
     box-sizing: border-box;
+}
+
+body[data-theme="dark"] {
+    --bg: #101815;
+    --bg-accent: #1c2a26;
+    --panel: rgba(18, 27, 24, 0.88);
+    --panel-border: rgba(214, 231, 215, 0.12);
+    --text: #edf4ec;
+    --muted: #b9c8bc;
+    --board: #08110c;
+    --grid: rgba(237, 244, 236, 0.08);
+    --snake-head: #f1f5ea;
+    --fruit: #ff8458;
+    --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    --input-bg: rgba(8, 17, 12, 0.52);
+    --input-border: rgba(214, 231, 215, 0.16);
+    --button-start: linear-gradient(135deg, #dbe8d7, #6faf64);
 }
 
 body {
@@ -78,7 +98,7 @@ h1 {
 
 .hud {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 24px;
 }
@@ -106,6 +126,40 @@ h1 {
     margin-bottom: 24px;
 }
 
+.setup-form {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.field {
+    display: grid;
+    gap: 8px;
+}
+
+.field span {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+}
+
+.field input,
+.field select {
+    width: 100%;
+    border: 1px solid var(--input-border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--text);
+    background: var(--input-bg);
+}
+
+.field input[type="color"] {
+    min-height: 52px;
+    padding: 6px;
+}
+
 .controls p {
     margin: 8px 0;
     line-height: 1.4;
@@ -118,10 +172,14 @@ button {
     font: inherit;
     font-weight: 700;
     color: #fffdf5;
-    background: linear-gradient(135deg, #2c241b, #47633f);
+    background: var(--button-start);
     cursor: pointer;
     transition: transform 120ms ease, box-shadow 120ms ease;
     box-shadow: 0 12px 26px rgba(44, 36, 27, 0.18);
+}
+
+body[data-theme="dark"] button {
+    color: #0e1612;
 }
 
 button:hover,
@@ -165,13 +223,18 @@ canvas {
     display: none;
 }
 
+.overlay > div {
+    max-width: 340px;
+}
+
 .overlay-title {
     margin: 0 0 10px;
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
 }
 
-#overlay-text {
+#overlay-text,
+#start-overlay-text {
     margin: 0;
     color: rgba(255, 253, 245, 0.86);
 }
