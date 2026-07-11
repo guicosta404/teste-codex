@@ -7,12 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="ambient ambient-left" aria-hidden="true"></div>
+    <div class="ambient ambient-right" aria-hidden="true"></div>
     <main class="app">
         <section class="panel">
             <p class="eyebrow">Arcade</p>
-            <h1>Snake Game</h1>
+            <h1>Snake Drift</h1>
             <p class="intro">
-                Collect fruit, grow by one segment each time, and survive as the pace keeps rising.
+                Pilot a luminous serpent through a glass-grid arena, stack points, and keep control as the run accelerates.
             </p>
 
             <form id="setup-form" class="setup-form">
@@ -68,17 +70,24 @@
         </section>
 
         <section class="board-shell" aria-label="Snake game area">
-            <canvas
-                id="game"
-                width="560"
-                height="560"
-                aria-label="Snake game board"
-                role="img"
-            ></canvas>
+            <div class="board-frame">
+                <div class="board-topbar" aria-hidden="true">
+                    <span class="topbar-pill">Neon Run</span>
+                    <span class="topbar-pill">20x20 Grid</span>
+                    <span class="topbar-pill" id="theme-pill">Light Mode</span>
+                </div>
+                <canvas
+                    id="game"
+                    width="560"
+                    height="560"
+                    aria-label="Snake game board"
+                    role="img"
+                ></canvas>
+            </div>
             <div id="start-overlay" class="overlay" aria-live="polite">
                 <div>
-                    <p class="overlay-title">Ready to Play?</p>
-                    <p id="start-overlay-text">Choose a nickname, color, and theme to begin.</p>
+                    <p class="overlay-title">Ready to Drift?</p>
+                    <p id="start-overlay-text">Choose a nickname, tune the palette, and launch your session.</p>
                 </div>
             </div>
             <div id="overlay" class="overlay hidden" aria-live="polite">
