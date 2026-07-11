@@ -1,0 +1,203 @@
+:root {
+    --bg: #f2ede3;
+    --bg-accent: #eadfcb;
+    --panel: rgba(252, 249, 242, 0.88);
+    --panel-border: rgba(61, 42, 26, 0.16);
+    --text: #2c241b;
+    --muted: #6a5a49;
+    --board: #1f3122;
+    --grid: rgba(240, 237, 221, 0.07);
+    --snake-head: #f7f3e8;
+    --snake-body: #7bc96f;
+    --fruit: #ff6b35;
+    --shadow: 0 24px 60px rgba(44, 36, 27, 0.16);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(123, 201, 111, 0.18), transparent 28%),
+        linear-gradient(135deg, var(--bg), var(--bg-accent));
+}
+
+.app {
+    width: min(1120px, calc(100vw - 32px));
+    margin: 0 auto;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(260px, 360px) minmax(320px, 1fr);
+    gap: 28px;
+    align-items: center;
+    padding: 32px 0;
+}
+
+.panel,
+.board-shell {
+    border: 1px solid var(--panel-border);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+}
+
+.panel {
+    background: var(--panel);
+    backdrop-filter: blur(10px);
+    padding: 32px;
+}
+
+.eyebrow {
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.76rem;
+    color: var(--muted);
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(2.3rem, 4vw, 3.8rem);
+    line-height: 0.96;
+}
+
+.intro,
+.controls p {
+    color: var(--muted);
+}
+
+.intro {
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+
+.hud {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.hud-card {
+    background: rgba(255, 255, 255, 0.58);
+    border-radius: 18px;
+    padding: 16px 18px;
+}
+
+.hud-label {
+    display: block;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.hud-card strong {
+    font-size: 2rem;
+}
+
+.controls {
+    margin-bottom: 24px;
+}
+
+.controls p {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+button {
+    border: 0;
+    border-radius: 999px;
+    padding: 14px 20px;
+    font: inherit;
+    font-weight: 700;
+    color: #fffdf5;
+    background: linear-gradient(135deg, #2c241b, #47633f);
+    cursor: pointer;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    box-shadow: 0 12px 26px rgba(44, 36, 27, 0.18);
+}
+
+button:hover,
+button:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 32px rgba(44, 36, 27, 0.22);
+}
+
+.board-shell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+        linear-gradient(145deg, rgba(44, 36, 27, 0.12), rgba(44, 36, 27, 0.04)),
+        rgba(255, 255, 255, 0.46);
+}
+
+canvas {
+    width: min(560px, 100%);
+    height: auto;
+    display: block;
+    border-radius: 18px;
+    background: var(--board);
+    border: 8px solid rgba(255, 255, 255, 0.56);
+}
+
+.overlay {
+    position: absolute;
+    inset: 24px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    border-radius: 18px;
+    background: rgba(23, 18, 12, 0.62);
+    color: #fffdf5;
+    padding: 24px;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-title {
+    margin: 0 0 10px;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+}
+
+#overlay-text {
+    margin: 0;
+    color: rgba(255, 253, 245, 0.86);
+}
+
+@media (max-width: 900px) {
+    .app {
+        grid-template-columns: 1fr;
+        width: min(680px, calc(100vw - 24px));
+        padding: 24px 0;
+    }
+
+    .panel {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 520px) {
+    .hud {
+        grid-template-columns: 1fr;
+    }
+
+    .board-shell {
+        padding: 14px;
+    }
+
+    .overlay {
+        inset: 14px;
+    }
+}

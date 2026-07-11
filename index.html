@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app">
+        <section class="panel">
+            <p class="eyebrow">Arcade</p>
+            <h1>Snake Game</h1>
+            <p class="intro">
+                Collect fruit, grow by one segment each time, and survive as the pace keeps rising.
+            </p>
+
+            <div class="hud" aria-label="Game status">
+                <div class="hud-card">
+                    <span class="hud-label">Score</span>
+                    <strong id="score">0</strong>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-label">Speed</span>
+                    <strong id="level">1</strong>
+                </div>
+            </div>
+
+            <div class="controls">
+                <p>Controls: Arrow keys or W A S D</p>
+                <p>Restart: Enter or click the button after game over</p>
+            </div>
+
+            <button id="restart-button" type="button">Restart Game</button>
+        </section>
+
+        <section class="board-shell" aria-label="Snake game area">
+            <canvas
+                id="game"
+                width="560"
+                height="560"
+                aria-label="Snake game board"
+                role="img"
+            ></canvas>
+            <div id="overlay" class="overlay hidden" aria-live="polite">
+                <p class="overlay-title">Game Over</p>
+                <p id="overlay-text">Press Enter or use the restart button.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
