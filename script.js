@@ -278,8 +278,28 @@ function isReverseDirection(proposedDirection) {
     );
 }
 
+function isTypingTarget(target) {
+    if (!(target instanceof HTMLElement)) {
+        return false;
+    }
+
+    const tagName = target.tagName;
+
+    return (
+        target.isContentEditable ||
+        tagName === "INPUT" ||
+        tagName === "TEXTAREA" ||
+        tagName === "SELECT" ||
+        tagName === "BUTTON"
+    );
+}
+
 function handleDirectionChange(event) {
     if (!sessionStarted) {
+        return;
+    }
+
+    if (isTypingTarget(event.target)) {
         return;
     }
 

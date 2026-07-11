@@ -1,0 +1,3 @@
+display_name: Front-End Reviewer
+short_description: Review frontend changes for bugs, regressions, accessibility, and test gaps.
+default_prompt: Review these frontend changes with emphasis on functional bugs, visual regressions, accessibility, responsive behavior, state management risks, and missing tests. Present findings first, ordered by severity, with file and line references when possible.
